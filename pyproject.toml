@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "countries-map-streamlit"
+version = "0.1.0"
+description = ""
+authors = ["lx4r <lx4r@users.noreply.github.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+streamlit = "^1.31.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
