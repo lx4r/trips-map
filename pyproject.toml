@@ -8,6 +8,9 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.12"
 streamlit = "^1.31.1"
+folium = "^0.15.1"
+streamlit-folium = "^0.18.0"
+geopy = "^2.4.1"
 
 
 [build-system]
