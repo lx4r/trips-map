@@ -13,6 +13,7 @@ streamlit-folium = "^0.18.0"
 geopy = "^2.4.1"
 watchdog = "^4.0.0"
 pydantic = "^2.6.2"
+pandas = "^2.2.1"
 
 
 [build-system]

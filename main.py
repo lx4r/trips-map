@@ -6,6 +6,8 @@ from streamlit_folium import st_folium
 from geopy.geocoders import Nominatim
 from pydantic import BaseModel, Field
 from typing import List, Optional
+import pandas as pd
+
 
 st.set_page_config(layout="wide")
 
@@ -47,6 +49,12 @@ def load_geojson_data():
 
 countries_data = load_countries_data()
 
+data = []
+for country in countries_data.countries:
+    cities_in_country = [city.name for city in country.cities or []]
+    data.append({"Country": country.name, "Cities": ", ".join(cities_in_country)})
+df = pd.DataFrame(data)
+
 geojson_data = load_geojson_data()
 
 m = folium.Map()
@@ -81,3 +89,5 @@ for country in countries_data.countries:
 
 # call to render Folium map in Streamlit
 st_folium(m, width=1000, returned_objects=[])
+
+st.dataframe(df)
