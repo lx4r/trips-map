@@ -4,14 +4,30 @@ import toml
 import json
 from streamlit_folium import st_folium
 from geopy.geocoders import Nominatim
+from pydantic import BaseModel, Field
+from typing import List, Optional
 
 st.set_page_config(layout="wide")
 
 geolocator = Nominatim(user_agent="countriesMap")
 
 
+class City(BaseModel):
+    name: str
+
+
+class Country(BaseModel):
+    name: str
+    cities: Optional[List[City]]
+
+
+class Countries(BaseModel):
+    countries: List[Country]
+
+
 def load_countries_data():
-    return toml.load("./countries.toml")
+    data = toml.load("./countries.toml")
+    return Countries.parse_obj(data)
 
 
 @st.cache_data
@@ -42,24 +58,25 @@ filtered_geojson_data = {
         feature
         for feature in geojson_data["features"]
         if feature["properties"]["name"]
-        in [country["name"] for country in countries_data["countries"]]
+        in [country.name for country in countries_data.countries]
     ],
 }
+
 
 # Add GeoJSON to map
 folium.GeoJson(filtered_geojson_data, name="geojson").add_to(m)
 
-for country in countries_data["countries"]:
-    if not country.get("cities"):
+for country in countries_data.countries:
+    if not country.cities:
         continue
-    for city in country["cities"]:
+    for city in country.cities:
         coordinates = get_city_coordinates(
-            city_name=city["name"], country_name=country["name"]
+            city_name=city.name, country_name=country.name
         )
         if coordinates:
             folium.Marker(
                 coordinates,
-                tooltip=city["name"],
+                tooltip=city.name,
             ).add_to(m)
 
 # call to render Folium map in Streamlit
