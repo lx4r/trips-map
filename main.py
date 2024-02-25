@@ -12,7 +12,15 @@ data = toml.load("./countries.toml")
 geolocator = Nominatim(user_agent="countriesMap")
 
 
-# center on Liberty Bell, add marker
+@st.cache_data
+def get_city_coordinates(city_name):
+    location = geolocator.geocode(query={"city": city_name})
+    if location:
+        return [location.latitude, location.longitude]
+    else:
+        return None
+
+
 m = folium.Map()
 
 # Load GeoJSON data
@@ -35,10 +43,10 @@ folium.GeoJson(filtered_geojson_data, name="geojson").add_to(m)
 
 for country in data["countries"]:
     for city in country["cities"]:
-        location = geolocator.geocode(query={"city": city["name"]})
-        if location:
+        coordinates = get_city_coordinates(city["name"])
+        if coordinates:
             folium.Marker(
-                [location.latitude, location.longitude],
+                coordinates,
                 tooltip=city["name"],
             ).add_to(m)
 
