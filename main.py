@@ -25,6 +25,7 @@ class Country(BaseModel):
 
 class Trip(BaseModel):
     year: int
+    travel_companions: List[str]
     countries: List[Country]
 
 
@@ -96,6 +97,7 @@ for trip in trips_data:
             "Cities": [
                 city.name for country in trip.countries for city in country.cities
             ],
+            "Travel Companions": trip.travel_companions,
         }
     )
 
