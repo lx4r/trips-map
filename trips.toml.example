@@ -1,0 +1,8 @@
+[[trips]]
+year = 2024
+[[trips.countries]]
+name = "Germany"
+[[trips.countries.cities]]
+name = "Hamburg"
+[[trips.countries.cities]]
+name = "Berlin"
