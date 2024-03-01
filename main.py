@@ -101,17 +101,25 @@ visited_countries_outlines_geojson = {
 
 folium.GeoJson(visited_countries_outlines_geojson, name="geojson").add_to(m)
 
+visited_cities_per_country = {}
 for trip in filtered_trips:
     for country in trip.countries:
-        for city in country.cities:
-            coordinates = get_city_coordinates(
-                city_name=city.name, country_name=country.name
+        visited_cities_per_country[country.name] = (
+            set([city.name for city in country.cities])
+            if country.name not in visited_cities_per_country
+            else visited_cities_per_country[country.name].union(
+                set([city.name for city in country.cities])
             )
-            if coordinates:
-                folium.Marker(
-                    coordinates,
-                    tooltip=city.name,
-                ).add_to(m)
+        )
+
+for country in visited_cities_per_country:
+    for city in visited_cities_per_country[country]:
+        coordinates = get_city_coordinates(city_name=city, country_name=country)
+        if coordinates:
+            folium.Marker(
+                coordinates,
+                tooltip=city,
+            ).add_to(m)
 
 with st.spinner("Updating map..."):
     st_folium(m, width=1000, returned_objects=[])
