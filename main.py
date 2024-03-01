@@ -54,8 +54,25 @@ def load_country_outlines_geojson():
 
 
 trips_data = load_trips_data().trips
+
+all_companions = list(
+    set(companion for trip in trips_data for companion in trip.travel_companions)
+)
+
+selected_companions = st.multiselect("Select travel companions", all_companions)
+
+filtered_trips = (
+    [
+        trip
+        for trip in trips_data
+        if set(trip.travel_companions).intersection(set(selected_companions))
+    ]
+    if selected_companions
+    else trips_data
+)
+
 visited_country_names = [
-    country.name for trip in trips_data for country in trip.countries
+    country.name for trip in filtered_trips for country in trip.countries
 ]
 
 geojson_data = load_country_outlines_geojson()
@@ -74,7 +91,7 @@ visited_countries_outlines_geojson = {
 
 folium.GeoJson(visited_countries_outlines_geojson, name="geojson").add_to(m)
 
-for trip in trips_data:
+for trip in filtered_trips:
     for country in trip.countries:
         for city in country.cities:
             coordinates = get_city_coordinates(
@@ -86,10 +103,11 @@ for trip in trips_data:
                     tooltip=city.name,
                 ).add_to(m)
 
-st_folium(m, width=1000, returned_objects=[])
+with st.spinner("Updating map..."):
+    st_folium(m, width=1000, returned_objects=[])
 
 data = []
-for trip in trips_data:
+for trip in filtered_trips:
     data.append(
         {
             "Year": str(trip.year),
