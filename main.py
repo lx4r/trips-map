@@ -54,22 +54,32 @@ def load_country_outlines_geojson():
 
 
 trips_data = load_trips_data().trips
+filtered_trips = trips_data.copy()
 
-all_companions = list(
-    set(companion for trip in trips_data for companion in trip.travel_companions)
-)
+filter_by_year = st.checkbox("Filter by year")
 
-selected_companions = st.multiselect("Select travel companions", all_companions)
+if filter_by_year:
+    min_year = min(trip.year for trip in trips_data)
+    max_year = max(trip.year for trip in trips_data)
 
-filtered_trips = (
-    [
+    selected_year = st.slider("Select a year", min_year, max_year)
+
+    filtered_trips = [trip for trip in filtered_trips if trip.year == selected_year]
+
+filter_by_companion = st.checkbox("Filter by travel companion")
+
+if filter_by_companion:
+    all_companions = list(
+        set(companion for trip in trips_data for companion in trip.travel_companions)
+    )
+
+    selected_companions = st.multiselect("Select travel companions", all_companions)
+
+    filtered_trips = [
         trip
-        for trip in trips_data
+        for trip in filtered_trips
         if set(trip.travel_companions).intersection(set(selected_companions))
     ]
-    if selected_companions
-    else trips_data
-)
 
 visited_country_names = [
     country.name for trip in filtered_trips for country in trip.countries
