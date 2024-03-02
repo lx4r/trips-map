@@ -26,7 +26,7 @@ class Country(BaseModel):
 class Trip(BaseModel):
     year: int
     description: Optional[str] = None
-    travel_companions: List[str]
+    travel_companions: Optional[List[str]] = None
     countries: List[Country]
 
 
