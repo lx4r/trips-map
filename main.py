@@ -100,17 +100,17 @@ for trip in filtered_trips:
             )
         )
 
-for country in visited_cities_per_country:
-    for city in visited_cities_per_country[country]:
-        coordinates = get_city_coordinates(city_name=city, country_name=country)
-        if coordinates:
-            folium.Marker(
-                coordinates,
-                tooltip=city,
-            ).add_to(m)
+with st.spinner("Getting city coordinates..."):
+    for country in visited_cities_per_country:
+        for city in visited_cities_per_country[country]:
+            coordinates = get_city_coordinates(city_name=city, country_name=country)
+            if coordinates:
+                folium.Marker(
+                    coordinates,
+                    tooltip=city,
+                ).add_to(m)
 
-with st.spinner("Updating map..."):
-    st_folium(m, width=1000, returned_objects=[])
+st_folium(m, width=1000, returned_objects=[])
 
 data = []
 for trip in filtered_trips:
