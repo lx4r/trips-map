@@ -4,34 +4,13 @@ import toml
 import json
 from streamlit_folium import st_folium
 from geopy.geocoders import Nominatim
-from pydantic import BaseModel, Field
-from typing import List, Optional
 import pandas as pd
+from data_schema import Trips
 
 
 st.set_page_config(layout="wide")
 
 geolocator = Nominatim(user_agent="countriesMap")
-
-
-class City(BaseModel):
-    name: str
-
-
-class Country(BaseModel):
-    name: str
-    cities: List[City]
-
-
-class Trip(BaseModel):
-    year: int
-    description: Optional[str] = None
-    travel_companions: Optional[List[str]] = None
-    countries: List[Country]
-
-
-class Trips(BaseModel):
-    trips: List[Trip]
 
 
 def load_trips_data():
