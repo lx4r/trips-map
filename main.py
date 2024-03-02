@@ -90,15 +90,23 @@ geojson_data = load_country_outlines_geojson()
 
 m = folium.Map()
 
-visited_country_names_set = set(visited_country_names)
+unique_visited_country_names = set(visited_country_names)
+country_outlines_geojsons_map = {
+    feature["properties"]["name"]: feature for feature in geojson_data["features"]
+}
+
 visited_countries_outlines_geojson = {
     "type": "FeatureCollection",
-    "features": [
-        feature
-        for feature in geojson_data["features"]
-        if feature["properties"]["name"] in visited_country_names_set
-    ],
+    "features": [],
 }
+for country_name in unique_visited_country_names:
+    if not country_name in country_outlines_geojsons_map:
+        raise ValueError(f'Couldn\'t find outline for country "{country_name}".')
+
+    visited_countries_outlines_geojson["features"].append(
+        country_outlines_geojsons_map[country_name]
+    )
+
 
 folium.GeoJson(visited_countries_outlines_geojson, name="geojson").add_to(m)
 
