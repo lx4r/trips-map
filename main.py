@@ -5,7 +5,7 @@ import json
 from streamlit_folium import st_folium
 from geopy.geocoders import Nominatim
 from pydantic import BaseModel, Field
-from typing import List
+from typing import List, Optional
 import pandas as pd
 
 
@@ -25,6 +25,7 @@ class Country(BaseModel):
 
 class Trip(BaseModel):
     year: int
+    description: Optional[str] = None
     travel_companions: List[str]
     countries: List[Country]
 
@@ -134,6 +135,7 @@ for trip in filtered_trips:
                 city.name for country in trip.countries for city in country.cities
             ],
             "Travel Companions": trip.travel_companions,
+            "Description": trip.description,
         }
     )
 
