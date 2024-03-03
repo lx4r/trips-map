@@ -20,11 +20,12 @@ def load_trips_data():
 
 @st.cache_data
 def get_city_coordinates(city_name, country_name):
-    location = geolocator.geocode(query={"city": city_name, "country": country_name})
-    if location:
-        return [location.latitude, location.longitude]
-    else:
-        return None
+    location = geolocator.geocode(query=f"{city_name}, {country_name}")
+
+    if not location:
+        raise ValueError(f'Couldn\'t find coordinates for city "{city_name}".')
+
+    return [location.latitude, location.longitude]
 
 
 @st.cache_data
@@ -67,7 +68,7 @@ visited_country_names = [
 
 geojson_data = load_country_outlines_geojson()
 
-m = folium.Map()
+m = folium.Map(zoom_start=5)
 
 unique_visited_country_names = set(visited_country_names)
 country_outlines_geojsons_map = {
