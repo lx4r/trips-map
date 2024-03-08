@@ -34,6 +34,21 @@ def load_country_outlines_geojson():
         return json.load(f)
 
 
+def calculate_stats(trips):
+    visited_countries = set()
+    visited_cities = set()
+    for trip in trips:
+        for country in trip.countries:
+            visited_countries.add(country.name)
+            for city in country.cities:
+                visited_cities.add(f"{city.name}, {country.name}")
+
+    return {
+        "num_visited_countries": len(visited_countries),
+        "num_visited_cities": len(visited_cities),
+    }
+
+
 trips_data = load_trips_data().trips
 filtered_trips = trips_data.copy()
 
@@ -129,3 +144,11 @@ for trip in filtered_trips:
 
 df = pd.DataFrame(data)
 st.dataframe(data=df)
+
+
+st.header("Stats")
+
+stats = calculate_stats(filtered_trips)
+
+f"Number of visited countries: {stats['num_visited_countries']}"
+f"Number of visited cities: {stats['num_visited_cities']}"
