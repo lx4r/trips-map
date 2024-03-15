@@ -34,7 +34,7 @@ def load_country_outlines_geojson():
         return json.load(f)
 
 
-def calculate_stats(trips):
+def aggregate_data(trips):
     visited_countries = set()
     visited_cities = set()
     for trip in trips:
@@ -44,8 +44,8 @@ def calculate_stats(trips):
                 visited_cities.add(f"{city.name}, {country.name}")
 
     return {
-        "num_visited_countries": len(visited_countries),
-        "num_visited_cities": len(visited_cities),
+        "visited_countries": sorted(visited_countries),
+        "visited_cities": sorted(visited_cities),
     }
 
 
@@ -148,7 +148,16 @@ st.dataframe(data=df)
 
 st.header("Stats")
 
-stats = calculate_stats(filtered_trips)
+aggregated_data = aggregate_data(filtered_trips)
 
-f"Number of visited countries: {stats['num_visited_countries']}"
-f"Number of visited cities: {stats['num_visited_cities']}"
+st.write(
+    f"Number of visited countries: {len(aggregated_data['visited_countries'])}"
+)
+
+with st.expander("Visited countries"):
+    st.dataframe(pd.DataFrame(data=aggregated_data["visited_countries"], columns=["Country"]), hide_index=True, use_container_width=True)
+
+f"Number of visited cities: {len(aggregated_data['visited_cities'])}"
+
+with st.expander("Visited cities"):
+    st.dataframe(data=pd.DataFrame(data=aggregated_data["visited_cities"], columns=["City"]), hide_index=True, use_container_width=True)
