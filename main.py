@@ -36,18 +36,12 @@ def load_country_outlines_geojson():
         return json.load(f)
 
 
-def aggregate_data(trips):
-    visited_countries = set()
-    visited_cities = set()
-    for trip in trips:
-        for country in trip.countries:
-            visited_countries.add(country.name)
-            for city in country.cities:
-                visited_cities.add(f"{city.name}, {country.name}")
+def calculate_stats(visited_cities_per_country):
+    visited_cities = [city for visited_cities_in_country in visited_cities_per_country.values() for city in visited_cities_in_country]
 
     return {
-        "visited_countries": sorted(visited_countries),
-        "visited_cities": sorted(visited_cities),
+        "num_visited_countries": len(visited_cities_per_country.keys()),
+        "num_visited_cities": len(visited_cities),
     }
 
 
@@ -150,16 +144,16 @@ st.dataframe(data=pd.DataFrame(data), hide_index=True, use_container_width=True)
 
 st.header("Stats")
 
-aggregated_data = aggregate_data(filtered_trips)
+stats = calculate_stats(visited_cities_per_country)
 
 st.write(
-    f"Number of visited countries: {len(aggregated_data['visited_countries'])}"
+    f"Number of visited countries: {stats['num_visited_countries']}"
 )
 
 with st.expander("Visited countries"):
-    st.dataframe(pd.DataFrame(data=aggregated_data["visited_countries"], columns=["Country"]), hide_index=True, use_container_width=True)
+    st.dataframe(pd.DataFrame(data=sorted(visited_cities_per_country.keys()), columns=["Country"]), hide_index=True, use_container_width=True)
 
-f"Number of visited cities: {len(aggregated_data['visited_cities'])}"
+f"Number of visited cities: {stats['num_visited_cities']}"
 
-with st.expander("Visited cities"):
-    st.dataframe(data=pd.DataFrame(data=aggregated_data["visited_cities"], columns=["City"]), hide_index=True, use_container_width=True)
+with st.expander("Visited cities per country"):
+    st.dataframe(data=pd.DataFrame(data=sorted(visited_cities_per_country.items()), columns=["Country", "City"]), hide_index=True, use_container_width=True)
