@@ -10,6 +10,8 @@ from data_schema import Trips
 
 st.set_page_config(layout="wide")
 
+st.title("Trips")
+
 geolocator = Nominatim(user_agent="countriesMap")
 
 
@@ -94,8 +96,9 @@ visited_countries_outlines_geojson = {
     "type": "FeatureCollection",
     "features": [],
 }
+
 for country_name in unique_visited_country_names:
-    if not country_name in country_outlines_geojsons_map:
+    if country_name not in country_outlines_geojsons_map:
         raise ValueError(f'Couldn\'t find outline for country "{country_name}".')
 
     visited_countries_outlines_geojson["features"].append(
