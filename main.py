@@ -35,6 +35,20 @@ def load_country_outlines_geojson():
     with open("./countries_medium_resolution.geo.json") as f:
         return json.load(f)
 
+def group_visited_cities_by_country(trips):
+    visited_cities_per_country = {}
+
+    for trip in trips:
+        for country in trip.countries:
+            visited_cities_per_country[country.name] = (
+                set([city.name for city in country.cities])
+                if country.name not in visited_cities_per_country
+                else visited_cities_per_country[country.name].union(
+                    set([city.name for city in country.cities])
+                )
+            )
+
+    return visited_cities_per_country
 
 def calculate_stats(visited_cities_per_country):
     visited_cities = [city for visited_cities_in_country in visited_cities_per_country.values() for city in visited_cities_in_country]
@@ -102,16 +116,7 @@ for country_name in unique_visited_country_names:
 
 folium.GeoJson(visited_countries_outlines_geojson, name="geojson").add_to(m)
 
-visited_cities_per_country = {}
-for trip in filtered_trips:
-    for country in trip.countries:
-        visited_cities_per_country[country.name] = (
-            set([city.name for city in country.cities])
-            if country.name not in visited_cities_per_country
-            else visited_cities_per_country[country.name].union(
-                set([city.name for city in country.cities])
-            )
-        )
+visited_cities_per_country = group_visited_cities_by_country(filtered_trips)
 
 with st.spinner("Getting city coordinates..."):
     for country in visited_cities_per_country:
