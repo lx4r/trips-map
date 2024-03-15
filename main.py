@@ -142,8 +142,7 @@ for trip in filtered_trips:
         }
     )
 
-df = pd.DataFrame(data)
-st.dataframe(data=df)
+st.dataframe(data=pd.DataFrame(data), hide_index=True, use_container_width=True)
 
 
 st.header("Stats")
