@@ -94,16 +94,26 @@ filter_by_companion = st.checkbox("Filter by travel companion")
 
 if filter_by_companion:
     all_companions = list(
-        set(companion for trip in trips_data for companion in trip.travel_companions)
+        set(
+            companion
+            for trip in trips_data
+            if trip.travel_companions is not None
+            for companion in trip.travel_companions
+        )
     )
 
     selected_companions = st.multiselect("Select travel companions", all_companions)
 
-    filtered_trips = [
-        trip
-        for trip in filtered_trips
-        if set(trip.travel_companions).intersection(set(selected_companions))
-    ]
+    filtered_trips = (
+        [
+            trip
+            for trip in filtered_trips
+            if trip.travel_companions is not None
+            and set(trip.travel_companions).intersection(set(selected_companions))
+        ]
+        if selected_companions
+        else filtered_trips
+    )
 
 visited_country_names = [
     country.name for trip in filtered_trips for country in trip.countries
