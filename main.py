@@ -1,12 +1,13 @@
+import json
+
 import folium
+import pandas as pd
 import streamlit as st
 import toml
-import json
-from streamlit_folium import st_folium
 from geopy.geocoders import Nominatim
-import pandas as pd
-from data_schema import Trips
+from streamlit_folium import st_folium
 
+from data_schema import Trips
 
 st.set_page_config(layout="wide")
 
@@ -14,9 +15,16 @@ st.title("Trips")
 
 geolocator = Nominatim(user_agent="countriesMap")
 
+uploaded_file = st.file_uploader("Choose a data file", type=["toml"])
+
+if uploaded_file is None:
+    st.info("Please select a data file.", icon="ℹ️")
+    st.stop()
+
 
 def load_trips_data():
-    data = toml.load("./trips.toml")
+    data_string = uploaded_file.read().decode()
+    data = toml.loads(data_string)
     return Trips.model_validate(data)
 
 
@@ -35,6 +43,7 @@ def load_country_outlines_geojson():
     with open("./countries_medium_resolution.geo.json") as f:
         return json.load(f)
 
+
 def group_visited_cities_by_country(trips):
     visited_cities_per_country = {}
 
@@ -50,8 +59,13 @@ def group_visited_cities_by_country(trips):
 
     return visited_cities_per_country
 
+
 def calculate_stats(visited_cities_per_country):
-    visited_cities = [city for visited_cities_in_country in visited_cities_per_country.values() for city in visited_cities_in_country]
+    visited_cities = [
+        city
+        for visited_cities_in_country in visited_cities_per_country.values()
+        for city in visited_cities_in_country
+    ]
 
     return {
         "num_visited_countries": len(visited_cities_per_country.keys()),
@@ -151,14 +165,24 @@ st.header("Stats")
 
 stats = calculate_stats(visited_cities_per_country)
 
-st.write(
-    f"Number of visited countries: {stats['num_visited_countries']}"
-)
+st.write(f"Number of visited countries: {stats['num_visited_countries']}")
 
 with st.expander("Visited countries"):
-    st.dataframe(pd.DataFrame(data=sorted(visited_cities_per_country.keys()), columns=["Country"]), hide_index=True, use_container_width=True)
+    st.dataframe(
+        pd.DataFrame(
+            data=sorted(visited_cities_per_country.keys()), columns=["Country"]
+        ),
+        hide_index=True,
+        use_container_width=True,
+    )
 
 f"Number of visited cities: {stats['num_visited_cities']}"
 
 with st.expander("Visited cities per country"):
-    st.dataframe(data=pd.DataFrame(data=sorted(visited_cities_per_country.items()), columns=["Country", "City"]), hide_index=True, use_container_width=True)
+    st.dataframe(
+        data=pd.DataFrame(
+            data=sorted(visited_cities_per_country.items()), columns=["Country", "City"]
+        ),
+        hide_index=True,
+        use_container_width=True,
+    )
