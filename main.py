@@ -8,8 +8,10 @@ from geopy.geocoders import Nominatim
 from streamlit_folium import st_folium
 
 from data_schema import Trips
-
-NO_COMPANION_FILTER_OPTION = "(none)"
+from filtering_by_travel_companion import (
+    filter_trips_by_travel_companions,
+    retrieve_travel_companion_filter_options,
+)
 
 st.set_page_config(layout="wide")
 
@@ -92,37 +94,17 @@ if filter_by_year:
 
     filtered_trips = [trip for trip in filtered_trips if trip.year == selected_year]
 
-filter_by_companion = st.checkbox("Filter by travel companion")
+filter_by_travel_companion = st.checkbox("Filter by travel companion")
 
-if filter_by_companion:
-    all_companions = list(
-        set(
-            companion
-            for trip in trips_data
-            if trip.travel_companions is not None
-            for companion in trip.travel_companions
-        )
+if filter_by_travel_companion:
+    selected_travel_companions = st.multiselect(
+        "Select travel companions", retrieve_travel_companion_filter_options(trips_data)
     )
 
-    if any(trip.travel_companions is None for trip in trips_data):
-        all_companions = [NO_COMPANION_FILTER_OPTION] + all_companions
+    filtered_trips = filter_trips_by_travel_companions(
+        filtered_trips, selected_travel_companions
+    )
 
-    selected_companions = st.multiselect("Select travel companions", all_companions)
-
-    filtered_trips = [
-        trip
-        for trip in filtered_trips
-        if (
-            (
-                NO_COMPANION_FILTER_OPTION in selected_companions
-                and trip.travel_companions is None
-            )
-            or (
-                trip.travel_companions is not None
-                and set(trip.travel_companions).intersection(set(selected_companions))
-            )
-        )
-    ]
 
 visited_country_names = [
     country.name for trip in filtered_trips for country in trip.countries
@@ -182,7 +164,6 @@ for trip in filtered_trips:
     )
 
 st.dataframe(data=pd.DataFrame(data), hide_index=True, use_container_width=True)
-
 
 st.header("Stats")
 
