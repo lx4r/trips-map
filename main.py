@@ -1,5 +1,3 @@
-import json
-
 import folium
 import pandas as pd
 import streamlit as st
@@ -7,6 +5,10 @@ import toml
 from geopy.geocoders import Nominatim
 from streamlit_folium import st_folium
 
+from country_outlines import (
+    filter_country_outlines_to_only_visited,
+    load_country_outlines_geojson_feature_collection,
+)
 from data_schema import Trips
 from filtering_by_travel_companion import (
     filter_trips_by_travel_companions,
@@ -44,12 +46,6 @@ def get_city_coordinates(city_name, country_name):
         raise ValueError(f'Couldn\'t find coordinates for city "{city_name}".')
 
     return [location.latitude, location.longitude]
-
-
-@st.cache_data
-def load_country_outlines_geojson():
-    with open("./countries_medium_resolution.geo.json") as f:
-        return json.load(f)
 
 
 def group_visited_cities_by_country(trips):
@@ -105,33 +101,13 @@ if filter_by_travel_companion:
         filtered_trips, selected_travel_companions
     )
 
+country_outlines = load_country_outlines_geojson_feature_collection()
 
-visited_country_names = [
-    country.name for trip in filtered_trips for country in trip.countries
-]
-
-geojson_data = load_country_outlines_geojson()
+visited_countries_outlines_geojson = filter_country_outlines_to_only_visited(
+    trips=trips_data, country_outlines_geojson_feature_collection=country_outlines
+)
 
 m = folium.Map(zoom_start=5)
-
-unique_visited_country_names = set(visited_country_names)
-country_outlines_geojsons_map = {
-    feature["properties"]["name"]: feature for feature in geojson_data["features"]
-}
-
-visited_countries_outlines_geojson = {
-    "type": "FeatureCollection",
-    "features": [],
-}
-
-for country_name in unique_visited_country_names:
-    if country_name not in country_outlines_geojsons_map:
-        raise ValueError(f'Couldn\'t find outline for country "{country_name}".')
-
-    visited_countries_outlines_geojson["features"].append(
-        country_outlines_geojsons_map[country_name]
-    )
-
 
 folium.GeoJson(visited_countries_outlines_geojson, name="geojson").add_to(m)
 
