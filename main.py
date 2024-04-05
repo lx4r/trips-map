@@ -9,6 +9,8 @@ from streamlit_folium import st_folium
 
 from data_schema import Trips
 
+NO_COMPANION_FILTER_OPTION = "(none)"
+
 st.set_page_config(layout="wide")
 
 st.title("Trips")
@@ -102,18 +104,25 @@ if filter_by_companion:
         )
     )
 
+    if any(trip.travel_companions is None for trip in trips_data):
+        all_companions = [NO_COMPANION_FILTER_OPTION] + all_companions
+
     selected_companions = st.multiselect("Select travel companions", all_companions)
 
-    filtered_trips = (
-        [
-            trip
-            for trip in filtered_trips
-            if trip.travel_companions is not None
-            and set(trip.travel_companions).intersection(set(selected_companions))
-        ]
-        if selected_companions
-        else filtered_trips
-    )
+    filtered_trips = [
+        trip
+        for trip in filtered_trips
+        if (
+            (
+                NO_COMPANION_FILTER_OPTION in selected_companions
+                and trip.travel_companions is None
+            )
+            or (
+                trip.travel_companions is not None
+                and set(trip.travel_companions).intersection(set(selected_companions))
+            )
+        )
+    ]
 
 visited_country_names = [
     country.name for trip in filtered_trips for country in trip.countries
