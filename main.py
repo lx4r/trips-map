@@ -77,6 +77,21 @@ def calculate_stats(visited_cities_per_country):
     }
 
 
+def create_trips_dataframe_for_table(filtered_trips):
+    return [
+        {
+            "Year": str(trip.year),
+            "Countries": [country.name for country in trip.countries],
+            "Cities": [
+                city.name for country in trip.countries for city in country.cities
+            ],
+            "Travel Companions": trip.travel_companions,
+            "Description": trip.description,
+        }
+        for trip in filtered_trips
+    ]
+
+
 trips_data = load_trips_data().trips
 filtered_trips = trips_data.copy()
 
@@ -125,21 +140,11 @@ with st.spinner("Getting city coordinates..."):
 
 st_folium(m, width=1000, returned_objects=[])
 
-data = []
-for trip in filtered_trips:
-    data.append(
-        {
-            "Year": str(trip.year),
-            "Countries": [country.name for country in trip.countries],
-            "Cities": [
-                city.name for country in trip.countries for city in country.cities
-            ],
-            "Travel Companions": trip.travel_companions,
-            "Description": trip.description,
-        }
-    )
-
-st.dataframe(data=pd.DataFrame(data), hide_index=True, use_container_width=True)
+st.dataframe(
+    data=pd.DataFrame(create_trips_dataframe_for_table(filtered_trips)),
+    hide_index=True,
+    use_container_width=True,
+)
 
 st.header("Stats")
 
