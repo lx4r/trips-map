@@ -24,8 +24,12 @@ if uploaded_file is None:
 
 def load_trips_data():
     data_string = uploaded_file.read().decode()
-    data = toml.loads(data_string)
-    return Trips.model_validate(data)
+    try:
+        data = toml.loads(data_string)
+        return Trips.model_validate(data)
+    except Exception as e:
+        st.error(f"Error parsing TOML file: {e}", icon="🚨")
+        st.stop()
 
 
 @st.cache_data
