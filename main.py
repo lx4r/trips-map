@@ -117,7 +117,7 @@ map = create_map(
     geolocator=geolocator,
 )
 
-st_folium(map, width=1000, returned_objects=[])
+st_folium(map, returned_objects=[], use_container_width=True)
 
 st.dataframe(
     data=create_trips_dataframe_for_table(filtered_trips),
