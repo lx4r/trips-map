@@ -8,12 +8,12 @@ from country_outlines import (
     filter_country_outlines_to_only_visited,
     load_country_outlines_geojson_feature_collection,
 )
-from map_creation import create_map
 from data_schema import TripsFile
 from filtering_by_travel_companion import (
     filter_trips_by_travel_companions,
     retrieve_travel_companion_filter_options,
 )
+from map_creation import create_map
 from trips_aggregation import aggregate_trips
 
 
@@ -67,10 +67,16 @@ st.title("Trips")
 
 geolocator = Nominatim(user_agent="CountriesMap")
 
-uploaded_file = st.file_uploader("Choose a data file", type=["toml"])
+uploaded_file = st.file_uploader("Choose a trips file", type=["toml"])
 
 if uploaded_file is None:
-    st.info("Please select a data file.", icon="ℹ️")
+    st.info("Please select a trips file.", icon="ℹ️")
+
+    with st.popover(label="Trips file format", use_container_width=True):
+        with open("trips_file_format.md", "r") as file:
+            trips_file_format = file.read()
+        st.markdown(trips_file_format)
+
     st.stop()
 
 trips = load_trips_from_file(uploaded_file)
