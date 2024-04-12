@@ -111,7 +111,7 @@ st.set_page_config(layout="wide")
 
 st.title("Trips")
 
-geolocator = Nominatim(user_agent="countriesMap")
+geolocator = Nominatim(user_agent="CountriesMap")
 
 uploaded_file = st.file_uploader("Choose a data file", type=["toml"])
 
