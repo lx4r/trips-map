@@ -82,15 +82,16 @@ if uploaded_file is None:
 trips = load_trips_from_file(uploaded_file)
 filtered_trips = trips.copy()
 
-filter_by_year = st.checkbox("Filter by year")
+min_year = min(trip.year for trip in trips)
+max_year = max(trip.year for trip in trips)
 
-if filter_by_year:
-    min_year = min(trip.year for trip in trips)
-    max_year = max(trip.year for trip in trips)
+if min_year != max_year:
+    filter_by_year = st.checkbox("Filter by year")
 
-    selected_year = st.slider("Select a year", min_year, max_year)
+    if filter_by_year:
+        selected_year = st.slider("Select a year", min_year, max_year)
 
-    filtered_trips = [trip for trip in filtered_trips if trip.year == selected_year]
+        filtered_trips = [trip for trip in filtered_trips if trip.year == selected_year]
 
 filter_by_travel_companion = st.checkbox("Filter by travel companion")
 
