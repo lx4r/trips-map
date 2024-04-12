@@ -2,6 +2,8 @@
 
 A tool to visualize your trips
 
+![screenshot](assets/screenshot.png)
+
 ## Installation
 
 1. Clone this repo
