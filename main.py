@@ -104,7 +104,7 @@ if filter_by_travel_companion:
     )
 
 visited_countries_outlines_geojson = filter_country_outlines_to_only_visited(
-    trips=trips,
+    trips=filtered_trips,
     country_outlines_geojson_feature_collection=load_country_outlines_geojson_feature_collection(),
 )
 
