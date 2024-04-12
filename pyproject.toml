@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "countries-map-streamlit"
+name = "trips-map"
 version = "0.1.0"
 description = ""
 authors = ["lx4r <lx4r@users.noreply.github.com>"]
