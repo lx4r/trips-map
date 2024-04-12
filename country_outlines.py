@@ -5,7 +5,7 @@ import streamlit as st
 
 @st.cache_data
 def load_country_outlines_geojson_feature_collection():
-    with open("./countries_medium_resolution.geo.json") as f:
+    with open("./assets/countries_medium_resolution.geo.json") as f:
         return json.load(f)
 
 
