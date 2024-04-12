@@ -14,6 +14,7 @@ from filtering_by_travel_companion import (
     filter_trips_by_travel_companions,
     retrieve_travel_companion_filter_options,
 )
+from trips_aggregation import aggregate_trips
 
 
 def load_trips_from_file(file):
@@ -41,19 +42,6 @@ def group_visited_cities_by_country(trips):
             )
 
     return visited_cities_per_country
-
-
-def calculate_stats(visited_cities_per_country):
-    visited_cities = [
-        city
-        for visited_cities_in_country in visited_cities_per_country.values()
-        for city in visited_cities_in_country
-    ]
-
-    return {
-        "num_visited_countries": len(visited_cities_per_country.keys()),
-        "num_visited_cities": len(visited_cities),
-    }
 
 
 def create_trips_dataframe_for_table(filtered_trips):
@@ -132,26 +120,22 @@ st.dataframe(
 
 st.header("Stats")
 
-stats = calculate_stats(visited_cities_per_country)
+aggregated_trips = aggregate_trips(visited_cities_per_country)
 
-st.write(f"Number of visited countries: {stats['num_visited_countries']}")
+st.write(f"Number of visited countries: {aggregated_trips['num_visited_countries']}")
 
 with st.expander("Visited countries"):
     st.dataframe(
-        pd.DataFrame(
-            data=sorted(visited_cities_per_country.keys()), columns=["Country"]
-        ),
+        data=aggregated_trips["visited_countries_df"],
         hide_index=True,
         use_container_width=True,
     )
 
-f"Number of visited cities: {stats['num_visited_cities']}"
+f"Number of visited cities: {aggregated_trips['num_visited_cities']}"
 
 with st.expander("Visited cities per country"):
     st.dataframe(
-        data=pd.DataFrame(
-            data=sorted(visited_cities_per_country.items()), columns=["Country", "City"]
-        ),
+        data=aggregated_trips["visited_cities_df"],
         hide_index=True,
         use_container_width=True,
     )
