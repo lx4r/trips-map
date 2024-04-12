@@ -83,7 +83,9 @@ def create_trips_dataframe_for_table(filtered_trips):
     return pd.DataFrame(data)
 
 
-def create_map(visited_cities_per_country, visited_countries_outlines_geojson):
+def create_map(
+    visited_cities_per_country, visited_countries_outlines_geojson, geolocator
+):
     folium_map = folium.Map(zoom_start=5)
 
     folium.GeoJson(visited_countries_outlines_geojson, name="geojson").add_to(
@@ -149,7 +151,11 @@ visited_countries_outlines_geojson = filter_country_outlines_to_only_visited(
 
 visited_cities_per_country = group_visited_cities_by_country(filtered_trips)
 
-map = create_map(visited_cities_per_country, visited_countries_outlines_geojson)
+map = create_map(
+    visited_cities_per_country=visited_cities_per_country,
+    visited_countries_outlines_geojson=visited_countries_outlines_geojson,
+    geolocator=geolocator,
+)
 
 st_folium(map, width=1000, returned_objects=[])
 
