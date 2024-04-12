@@ -81,6 +81,26 @@ def create_trips_dataframe_for_table(filtered_trips):
     ]
 
 
+def create_map(visited_cities_per_country, visited_countries_outlines_geojson):
+    folium_map = folium.Map(zoom_start=5)
+
+    folium.GeoJson(visited_countries_outlines_geojson, name="geojson").add_to(
+        folium_map
+    )
+
+    with st.spinner("Getting city coordinates..."):
+        for country in visited_cities_per_country:
+            for city in visited_cities_per_country[country]:
+                coordinates = get_city_coordinates(city_name=city, country_name=country)
+                if coordinates:
+                    folium.Marker(
+                        coordinates,
+                        tooltip=city,
+                    ).add_to(folium_map)
+
+    return folium_map
+
+
 st.set_page_config(layout="wide")
 
 st.title("Trips")
@@ -123,23 +143,11 @@ visited_countries_outlines_geojson = filter_country_outlines_to_only_visited(
     trips=trips, country_outlines_geojson_feature_collection=country_outlines
 )
 
-m = folium.Map(zoom_start=5)
-
-folium.GeoJson(visited_countries_outlines_geojson, name="geojson").add_to(m)
-
 visited_cities_per_country = group_visited_cities_by_country(filtered_trips)
 
-with st.spinner("Getting city coordinates..."):
-    for country in visited_cities_per_country:
-        for city in visited_cities_per_country[country]:
-            coordinates = get_city_coordinates(city_name=city, country_name=country)
-            if coordinates:
-                folium.Marker(
-                    coordinates,
-                    tooltip=city,
-                ).add_to(m)
+map = create_map(visited_cities_per_country, visited_countries_outlines_geojson)
 
-st_folium(m, width=1000, returned_objects=[])
+st_folium(map, width=1000, returned_objects=[])
 
 st.dataframe(
     data=pd.DataFrame(create_trips_dataframe_for_table(filtered_trips)),
