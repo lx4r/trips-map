@@ -9,7 +9,7 @@ from country_outlines import (
     filter_country_outlines_to_only_visited,
     load_country_outlines_geojson_feature_collection,
 )
-from data_schema import Trips
+from data_schema import TripsFile
 from filtering_by_travel_companion import (
     filter_trips_by_travel_companions,
     retrieve_travel_companion_filter_options,
@@ -20,7 +20,8 @@ def load_trips_from_file(file):
     data_string = file.read().decode()
 
     try:
-        return Trips.model_validate(toml.loads(data_string)).trips
+        trips_file = TripsFile.model_validate(toml.loads(data_string))
+        return trips_file.trips
     except Exception as e:
         st.error(f"Error parsing TOML file: {e}", icon="🚨")
         st.stop()

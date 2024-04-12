@@ -1,6 +1,6 @@
 from typing import List, Optional
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
 
 class City(BaseModel):
@@ -19,5 +19,5 @@ class Trip(BaseModel):
     countries: List[Country]
 
 
-class Trips(BaseModel):
+class TripsFile(BaseModel):
     trips: List[Trip]
