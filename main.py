@@ -15,18 +15,6 @@ from filtering_by_travel_companion import (
     retrieve_travel_companion_filter_options,
 )
 
-st.set_page_config(layout="wide")
-
-st.title("Trips")
-
-geolocator = Nominatim(user_agent="countriesMap")
-
-uploaded_file = st.file_uploader("Choose a data file", type=["toml"])
-
-if uploaded_file is None:
-    st.info("Please select a data file.", icon="ℹ️")
-    st.stop()
-
 
 def load_trips_from_file(file):
     data_string = file.read().decode()
@@ -91,6 +79,18 @@ def create_trips_dataframe_for_table(filtered_trips):
         for trip in filtered_trips
     ]
 
+
+st.set_page_config(layout="wide")
+
+st.title("Trips")
+
+geolocator = Nominatim(user_agent="countriesMap")
+
+uploaded_file = st.file_uploader("Choose a data file", type=["toml"])
+
+if uploaded_file is None:
+    st.info("Please select a data file.", icon="ℹ️")
+    st.stop()
 
 trips = load_trips_from_file(uploaded_file)
 filtered_trips = trips.copy()
