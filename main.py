@@ -1,4 +1,3 @@
-import folium
 import pandas as pd
 import streamlit as st
 import toml
@@ -9,6 +8,7 @@ from country_outlines import (
     filter_country_outlines_to_only_visited,
     load_country_outlines_geojson_feature_collection,
 )
+from create_map import create_map
 from data_schema import TripsFile
 from filtering_by_travel_companion import (
     filter_trips_by_travel_companions,
@@ -25,16 +25,6 @@ def load_trips_from_file(file):
     except Exception as e:
         st.error(f"Error parsing TOML file: {e}", icon="🚨")
         st.stop()
-
-
-@st.cache_data
-def get_city_coordinates(city_name, country_name, _geolocator):
-    location = _geolocator.geocode(query=f"{city_name}, {country_name}")
-
-    if not location:
-        raise ValueError(f'Couldn\'t find coordinates for city "{city_name}".')
-
-    return [location.latitude, location.longitude]
 
 
 def group_visited_cities_by_country(trips):
@@ -83,30 +73,6 @@ def create_trips_dataframe_for_table(filtered_trips):
     return pd.DataFrame(data)
 
 
-def create_map(
-    visited_cities_per_country, visited_countries_outlines_geojson, geolocator
-):
-    folium_map = folium.Map(zoom_start=5)
-
-    folium.GeoJson(visited_countries_outlines_geojson, name="geojson").add_to(
-        folium_map
-    )
-
-    with st.spinner("Getting city coordinates..."):
-        for country in visited_cities_per_country:
-            for city in visited_cities_per_country[country]:
-                coordinates = get_city_coordinates(
-                    city_name=city, country_name=country, _geolocator=geolocator
-                )
-                if coordinates:
-                    folium.Marker(
-                        coordinates,
-                        tooltip=city,
-                    ).add_to(folium_map)
-
-    return folium_map
-
-
 st.set_page_config(layout="wide")
 
 st.title("Trips")
@@ -143,10 +109,9 @@ if filter_by_travel_companion:
         filtered_trips, selected_travel_companions
     )
 
-country_outlines = load_country_outlines_geojson_feature_collection()
-
 visited_countries_outlines_geojson = filter_country_outlines_to_only_visited(
-    trips=trips, country_outlines_geojson_feature_collection=country_outlines
+    trips=trips,
+    country_outlines_geojson_feature_collection=load_country_outlines_geojson_feature_collection(),
 )
 
 visited_cities_per_country = group_visited_cities_by_country(filtered_trips)
