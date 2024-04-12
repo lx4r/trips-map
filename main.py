@@ -8,7 +8,7 @@ from country_outlines import (
     filter_country_outlines_to_only_visited,
     load_country_outlines_geojson_feature_collection,
 )
-from create_map import create_map
+from map_creation import create_map
 from data_schema import TripsFile
 from filtering_by_travel_companion import (
     filter_trips_by_travel_companions,
