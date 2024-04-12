@@ -1,6 +1,6 @@
 # Trips file format
 
-The trips data should be provided in a TOML file with the following structure:
+The trips data should be provided in a TOML file with each trip represented by a `[[trips]]` section with the following structure:
 
 ```toml
 [[trips]]
@@ -14,13 +14,13 @@ name = "<name of visited city in the country>"
 [[trips.countries.cities]]
 name = "<name of another visited city in the country>"
 ```
-Each trip is represented by a `[[trips]]` section. Within each trip, you can specify multiple visited countries and within each country, you can specify multiple visited cities.
+Within each trip, you can specify multiple visited countries and within each country, you can specify multiple visited cities.
 
 Here's an example:
             
 ```toml
 [[trips]]
-year = 2024
+year = 2222
 description = "Summer vacation"
 travel_companions = ["Bob"]
 [[trips.countries]]
@@ -29,4 +29,10 @@ name = "Germany"
 name = "Hamburg"
 [[trips.countries.cities]]
 name = "Berlin"
+[[trips.countries]]
+name = "France"
+[[trips.countries.cities]]
+name = "Paris"
+[[trips.countries.cities]]
+name = "Lyon"
 ```
