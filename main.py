@@ -67,7 +67,7 @@ def calculate_stats(visited_cities_per_country):
 
 
 def create_trips_dataframe_for_table(filtered_trips):
-    return [
+    data = [
         {
             "Year": str(trip.year),
             "Countries": [country.name for country in trip.countries],
@@ -79,6 +79,8 @@ def create_trips_dataframe_for_table(filtered_trips):
         }
         for trip in filtered_trips
     ]
+
+    return pd.DataFrame(data)
 
 
 def create_map(visited_cities_per_country, visited_countries_outlines_geojson):
@@ -152,7 +154,7 @@ map = create_map(visited_cities_per_country, visited_countries_outlines_geojson)
 st_folium(map, width=1000, returned_objects=[])
 
 st.dataframe(
-    data=pd.DataFrame(create_trips_dataframe_for_table(filtered_trips)),
+    data=create_trips_dataframe_for_table(filtered_trips),
     hide_index=True,
     use_container_width=True,
 )
