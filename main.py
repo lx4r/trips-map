@@ -28,8 +28,8 @@ def load_trips_from_file(file):
 
 
 @st.cache_data
-def get_city_coordinates(city_name, country_name):
-    location = geolocator.geocode(query=f"{city_name}, {country_name}")
+def get_city_coordinates(city_name, country_name, _geolocator):
+    location = _geolocator.geocode(query=f"{city_name}, {country_name}")
 
     if not location:
         raise ValueError(f'Couldn\'t find coordinates for city "{city_name}".')
@@ -91,7 +91,9 @@ def create_map(visited_cities_per_country, visited_countries_outlines_geojson):
     with st.spinner("Getting city coordinates..."):
         for country in visited_cities_per_country:
             for city in visited_cities_per_country[country]:
-                coordinates = get_city_coordinates(city_name=city, country_name=country)
+                coordinates = get_city_coordinates(
+                    city_name=city, country_name=country, _geolocator=geolocator
+                )
                 if coordinates:
                     folium.Marker(
                         coordinates,
