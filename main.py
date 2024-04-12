@@ -28,11 +28,11 @@ if uploaded_file is None:
     st.stop()
 
 
-def load_trips_data():
-    data_string = uploaded_file.read().decode()
+def load_trips_from_file(file):
+    data_string = file.read().decode()
+
     try:
-        data = toml.loads(data_string)
-        return Trips.model_validate(data)
+        return Trips.model_validate(toml.loads(data_string)).trips
     except Exception as e:
         st.error(f"Error parsing TOML file: {e}", icon="🚨")
         st.stop()
@@ -92,14 +92,14 @@ def create_trips_dataframe_for_table(filtered_trips):
     ]
 
 
-trips_data = load_trips_data().trips
-filtered_trips = trips_data.copy()
+trips = load_trips_from_file(uploaded_file)
+filtered_trips = trips.copy()
 
 filter_by_year = st.checkbox("Filter by year")
 
 if filter_by_year:
-    min_year = min(trip.year for trip in trips_data)
-    max_year = max(trip.year for trip in trips_data)
+    min_year = min(trip.year for trip in trips)
+    max_year = max(trip.year for trip in trips)
 
     selected_year = st.slider("Select a year", min_year, max_year)
 
@@ -109,7 +109,7 @@ filter_by_travel_companion = st.checkbox("Filter by travel companion")
 
 if filter_by_travel_companion:
     selected_travel_companions = st.multiselect(
-        "Select travel companions", retrieve_travel_companion_filter_options(trips_data)
+        "Select travel companions", retrieve_travel_companion_filter_options(trips)
     )
 
     filtered_trips = filter_trips_by_travel_companions(
@@ -119,7 +119,7 @@ if filter_by_travel_companion:
 country_outlines = load_country_outlines_geojson_feature_collection()
 
 visited_countries_outlines_geojson = filter_country_outlines_to_only_visited(
-    trips=trips_data, country_outlines_geojson_feature_collection=country_outlines
+    trips=trips, country_outlines_geojson_feature_collection=country_outlines
 )
 
 m = folium.Map(zoom_start=5)
