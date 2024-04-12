@@ -4,9 +4,9 @@ The trips data should be provided in a TOML file with the following structure:
 
 ```toml
 [[trips]]
-year = <year of the trip>
+year = 2222 # year of the trip
 description = "<description of the trip>" # optional
-travel_companions = ["<name of travel companion 1>", "<name of travel companion 2>", ...] # optional
+travel_companions = ["<name of travel companion 1>", "<name of travel companion 2>", "..."] # optional
 [[trips.countries]]
 name = "<name of visited country>"
 [[trips.countries.cities]]
