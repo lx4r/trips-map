@@ -16,3 +16,11 @@ A tool to visualize your trips
 ## Trips file format
 
 See explanation [here](trips_file_format.md).
+
+# Contributing
+
+Contributions are welcome! Please feel free to submit pull requests or open issues to suggest improvements or add new features.
+
+# License
+
+See [here](LICENSE).
