@@ -17,10 +17,10 @@ A tool to visualize your trips
 
 See explanation [here](trips_file_format.md).
 
-# Contributing
+## Contributing
 
 Contributions are welcome! Please feel free to submit pull requests or open issues to suggest improvements or add new features.
 
-# License
+## License
 
 See [here](LICENSE).
