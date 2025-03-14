@@ -1,3 +1,5 @@
+import time
+
 import folium
 import streamlit as st
 
@@ -9,6 +11,9 @@ def _get_city_coordinates(city_name, country_name, _geolocator):
 
     if not location:
         raise ValueError(f'Couldn\'t find coordinates for city "{city_name}".')
+
+    # Only one request per second is allowed by Nominatim
+    time.sleep(1)
 
     return [location.latitude, location.longitude]
 
