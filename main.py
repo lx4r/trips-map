@@ -1,7 +1,6 @@
 import pandas as pd
 import streamlit as st
 import toml
-from geopy.geocoders import Nominatim
 from streamlit_folium import st_folium
 
 from country_outlines import (
@@ -15,6 +14,7 @@ from filtering_by_travel_companion import (
 )
 from map_creation import create_map
 from trips_aggregation import aggregate_trips
+from setup_geolocator import setup_geolocator
 
 
 def load_trips_from_file(file):
@@ -65,7 +65,7 @@ st.set_page_config(layout="wide")
 
 st.title("Trips")
 
-geolocator = Nominatim(user_agent="lx4rs_trips_map")
+geolocator = setup_geolocator()
 
 uploaded_file = st.file_uploader("Choose a trips file", type=["toml"])
 
