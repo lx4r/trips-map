@@ -4,14 +4,19 @@ A tool to visualize your trips
 
 ![screenshot](assets/screenshot.png)
 
+# Prerequisites
+
+- [uv](https://docs.astral.sh/uv/)
+- Python (see [`pyproject.toml`](pyproject.toml) for supported versions)
+
 ## Installation
 
 1. Clone this repo
-2. `poetry install`
+2. `uv sync`
 
 ## Running the app
 
-`poetry run streamlit run main.py`
+`uv run streamlit run main.py`
 
 ## Trips file format
 
