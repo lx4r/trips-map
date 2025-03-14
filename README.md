@@ -13,6 +13,7 @@ A tool to visualize your trips
 
 1. Clone this repo
 2. `uv sync`
+3. `uv run generate_dotenv.py`
 
 ## Running the app
 
