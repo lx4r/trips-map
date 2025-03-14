@@ -3,7 +3,8 @@ import streamlit as st
 
 
 @st.cache_data
-def get_city_coordinates(city_name, country_name, _geolocator):
+# Telling Streamlit to not cache the geolocator
+def _get_city_coordinates(city_name, country_name, _geolocator):
     location = _geolocator.geocode(query=f"{city_name}, {country_name}")
 
     if not location:
@@ -24,7 +25,7 @@ def create_map(
     with st.spinner("Getting city coordinates..."):
         for country in visited_cities_per_country:
             for city in visited_cities_per_country[country]:
-                coordinates = get_city_coordinates(
+                coordinates = _get_city_coordinates(
                     city_name=city, country_name=country, _geolocator=geolocator
                 )
                 if coordinates:
