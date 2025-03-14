@@ -65,7 +65,7 @@ st.set_page_config(layout="wide")
 
 st.title("Trips")
 
-geolocator = Nominatim(user_agent="Trips Map")
+geolocator = Nominatim(user_agent="lx4rs_trips_map")
 
 uploaded_file = st.file_uploader("Choose a trips file", type=["toml"])
 
