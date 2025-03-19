@@ -1,6 +1,6 @@
 # Trips Map
 
-A tool to visualize your trips
+A tool to visualize your trips on a map
 
 ![screenshot](assets/screenshot.png)
 
