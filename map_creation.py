@@ -23,6 +23,13 @@ def create_map(
 ):
     folium_map = folium.Map(zoom_start=5)
 
+    folium.plugins.Fullscreen(
+        position="topright",
+        title="Full screen",
+        title_cancel="Exit full screen",
+        force_separate_button=True,
+    ).add_to(folium_map)
+
     folium.GeoJson(visited_countries_outlines_geojson, name="geojson").add_to(
         folium_map
     )
