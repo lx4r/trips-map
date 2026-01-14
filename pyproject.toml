@@ -11,6 +11,6 @@ dependencies = [
     "pydantic>=2.12.5",
     "python-dotenv>=1.2.1",
     "streamlit>=1.52.2",
-    "streamlit-folium>=0.25.3",
+    "streamlit-folium>=0.26.1",
     "watchdog>=6.0.0",
 ]
