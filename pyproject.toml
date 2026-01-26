@@ -10,7 +10,7 @@ dependencies = [
     "pandas>=2.3.3",
     "pydantic>=2.12.5",
     "python-dotenv>=1.2.1",
-    "streamlit>=1.52.2",
+    "streamlit>=1.53.1",
     "streamlit-folium>=0.26.1",
     "watchdog>=6.0.0",
 ]
